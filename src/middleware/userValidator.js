@@ -3,9 +3,6 @@ const db = require("../database/database");
 const User = require("../model/user");
 
 const validateAddUser = [
-  body("id")
-    .isInt({ gt: 0 })
-    .withMessage("id harus numerik dan lebih besar dari 0"),
   body("name")
     .isString()
     .isLength({ min: 3, max: 15 })
@@ -41,7 +38,6 @@ const validateUpdateUser = [
 const isUserAuthenticated = async (req, res, next) => {
   const { email, password } = req.body;
 
-  // const user = db.getUserByEmail(email);
   const user = await User.findOne({
     email: email,
   }).exec();
@@ -62,7 +58,6 @@ const isUserAuthenticated = async (req, res, next) => {
 const isUserAlreadyExists = async (req, res, next) => {
   const { email } = req.body;
 
-  // const userEmail = db.getUserByEmail(email);
   const userEmail = await User.findOne({
     email: email,
   }).exec();

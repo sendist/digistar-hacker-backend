@@ -15,34 +15,32 @@ class UserController {
   static async addUser(req, res) {
     if (!isBodyValid(req, res)) return;
     const user = req.body;
-    // db.addUser(user);
     const newUser = new User(user);
     await newUser.save();
     res.status(201).json({ message: "User berhasil ditambahkan" });
   }
 
   static async getAllUsers(req, res) {
-    // const users = db.getAllUsers();
-    const users = await User.find();
+    const users = await User.find().select({ _id: 0, name: 1, email: 1, linkImgProfile: 1 }).exec();
     res.status(200).json(users);
   }
 
   static async updateUser(req, res) {
     if (!isBodyValid(req, res)) return;
     const user = req.body;
-    db.updateUser(user.email, user);
+    await User.findOneAndUpdate({ email: user.email }, user).exec();
     res.status(200).json({ message: "User berhasil diupdate" });
   }
 
   static async deleteUser(req, res) {
     const user = req.body;
-    db.deleteUser(user.email);
+    await User.findOneAndDelete({ email: user.email }).exec();
     res.status(200).json({ message: `User ${user.email} berhasil dihapus` });
   }
 
   static async getUserData(req, res) {
     const user = req.body;
-    const userData = db.getUserByEmail(user.email);
+    const userData = await User.findOne({ email: user.email }).exec();
     res.status(200).json(userData);
   }
 }
